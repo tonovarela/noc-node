@@ -4,6 +4,8 @@ Para instalar dependencias
 ``
 npm  install
 ``
+Crear la variables de entorno copiando el archiv .env.template  a .env
+
 
 
 

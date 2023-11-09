@@ -17,20 +17,23 @@ export class FileSystemDataSource implements LogDataSource {
     }
 
     private createLogsPath = () => {
-        [this.logPath,
-        this.allLogsPath,
-        this.lowLogsPath,
-        this.mediumLogsPath,
-        this.highLogsPath].forEach((path) => {
-            if (!fs.existsSync(path)) {
-                fs.mkdirSync(path);
-            }
-        });
+        if (!fs.existsSync(this.logPath)) {
+            fs.mkdirSync(this.logPath);
+        }
+        [
+            this.allLogsPath,
+            this.lowLogsPath,
+            this.mediumLogsPath,
+            this.highLogsPath].forEach((path) => {
+                if (!fs.existsSync(path)) {
+                    fs.writeFileSync(path, '');
+                }
+            });
     }
 
     async saveLogs(log: LogEntity): Promise<void> {
-        fs.appendFileSync(this.allLogsPath, `${JSON.stringify(log)}\n`);
-        const logJSON = `${JSON.stringify(log)}\n`
+        const logJSON = `${JSON.stringify(log)}\n`                            
+        fs.appendFileSync(this.allLogsPath, `${logJSON}`);                        
         switch (log.level) {
             case LogSeverityLevel.low:
                 fs.appendFileSync(this.lowLogsPath, logJSON);
@@ -42,10 +45,24 @@ export class FileSystemDataSource implements LogDataSource {
                 fs.appendFileSync(this.highLogsPath, logJSON);
                 break;
         }
-        return Promise.resolve();
+        
     }
-    getLogs(serverityLevel: LogSeverityLevel): Promise<LogEntity[]> {
-        throw new Error("Method not implemented.");
+    async getLogs(serverityLevel: LogSeverityLevel): Promise<LogEntity[]> {
+        switch (serverityLevel) {
+            case LogSeverityLevel.low:
+                return this.getLogFilePath(this.lowLogsPath);
+            case LogSeverityLevel.medium:
+                return this.getLogFilePath(this.mediumLogsPath);
+            case LogSeverityLevel.high:
+                return this.getLogFilePath(this.highLogsPath);
+            default:
+                return this.getLogFilePath(this.allLogsPath);
+        }
+    }
+
+    private getLogFilePath(path: string): LogEntity[] {
+        const content = fs.readFileSync(path, 'utf8');
+        return content.split('\n').map(log => LogEntity.fromJSON(log));
     }
 
 }

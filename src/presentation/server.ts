@@ -9,14 +9,6 @@ import { EmailService } from "./email/email.service";
 
 
 
-//  const transport = nodemailer.createTransport({
-//         service: envs.MAILER_SERVICE,
-//         auth: {
-//             user: envs.MAILER_EMAIL,
-//             pass: envs.MAILER_SECRET_KEY
-//         }
-//     });
-
 const fileSystemLogRepository = new LogRepositoryImpl(new FileSystemDataSource());
 const { MAILER_SERVICE: service, MAILER_EMAIL: user, MAILER_SECRET_KEY: pass } = envs;
 const emailService = new EmailService({ service, user, pass });

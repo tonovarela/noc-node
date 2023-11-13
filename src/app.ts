@@ -1,5 +1,5 @@
 import { ServerApp } from "./presentation/server";
-import { FileSystemDataSource } from './infraestructure/datasources/file-system.datasource';
+
 import { envs } from "./config/plugins/envs.plugins";
 
 
@@ -9,7 +9,7 @@ import { envs } from "./config/plugins/envs.plugins";
 
 
 function main() {
-//    ServerApp.start()      
-console.log(envs)
-    
+    ServerApp.start()
+    //console.log(envs)
+
 }

@@ -27,14 +27,13 @@ export class LogEntity {
 
 
     static fromJSON(json: string): LogEntity {
-        const { message, level, createdAt, origin } = JSON.parse(json);
-        if (!message) {
-            throw new Error('message is required');
-        }
-        if (!level) {
-            throw new Error('level is required');
-        }
+        const { message, level, createdAt, origin } = JSON.parse(json);        
         const log = new LogEntity({ message, level, origin, createdAt: new Date(createdAt) });
+        return log;
+    }
+    static fromObject=(object: { [key:string]:any}):LogEntity=> {
+        const  { message, level, origin, createdAt } = object;
+        const log= new LogEntity({ message, level, origin, createdAt });
         return log;
     }
 }

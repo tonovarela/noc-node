@@ -15,6 +15,9 @@ export class FileSystemDataSource implements LogDataSource {
     constructor() {
         this.createLogsPath();
     }
+    getLogById(id: number): Promise<LogEntity[]> {
+        throw new Error("Method not implemented.");
+    }
 
     private createLogsPath = () => {
         if (!fs.existsSync(this.logPath)) {

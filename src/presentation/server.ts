@@ -4,12 +4,15 @@ import { LogSeverityLevel } from "../domain/entities/log.entity";
 import { CheckService } from "../domain/use-cases/checks/check-service";
 import { FileSystemDataSource } from "../infraestructure/datasources/file-system.datasource";
 import { MongoLogDataSource } from "../infraestructure/datasources/mongo-log-datasource";
+import { PostgresLogDataSouce } from "../infraestructure/datasources/postgres-log.datasouce";
 import { LogRepositoryImpl } from "../infraestructure/repositories/log.repository.impl";
 import { CronService } from "./cron/cron-service";
 import { EmailService } from "./email/email.service";
 
-//const logRepository = new LogRepositoryImpl(new FileSystemDataSource());
-const logRepository = new LogRepositoryImpl(new MongoLogDataSource());
+const logRepositoryFileSystem = new LogRepositoryImpl(new FileSystemDataSource());
+const logRepositoryMongo = new LogRepositoryImpl(new MongoLogDataSource());
+const logRepositoryPostgres = new LogRepositoryImpl(new PostgresLogDataSouce());
+
 const { MAILER_SERVICE: service, MAILER_EMAIL: user, MAILER_SECRET_KEY: pass } = envs;
 const emailService = new EmailService({ service, user, pass });
 
@@ -27,16 +30,25 @@ export class ServerApp {
         //     subject:"test",
         //     htmlBody:"<h1>Este es una prueba del logs en el SISTEMAS</h1>"
         // })
-
-
         //emailService.sendEmailWithFileSystemLogs("mestelles@litoprocess.com")
-        // CronService.createJob("*/5 * * * * *", async() => {
-        //     const date = new Date();            
-        //     await new CheckService(logRepository).execute("https://www.google.com");
-        //     console.log("Cada 5 segundos ", date);
-        // });
-        const logs = await logRepository.getLogs(LogSeverityLevel.medium);
-        console.log(logs);
+        CronService.createJob("*/5 * * * * *", async() => {
+            const date = new Date();            
+            await new CheckService(logRepositoryFileSystem).execute("https://www.google.com");
+            console.log("Cada 5 segundos ", date,"en FyleSystem");
+        });
+        CronService.createJob("*/5 * * * * *", async() => {
+            const date = new Date();            
+            await new CheckService(logRepositoryPostgres).execute("https://www.google.com");
+            console.log("Cada 5 segundos ", date," en Postgres");
+        });
+
+        CronService.createJob("*/5 * * * * *", async() => {
+            const date = new Date();            
+            await new CheckService(logRepositoryMongo).execute("https://www.google.com");
+            console.log("Cada 5 segundos ", date, " en Mongo");
+        });
+        //const logs = await logRepository.getLogs(LogSeverityLevel.low);
+        //console.log(logs);
     }
 }
 

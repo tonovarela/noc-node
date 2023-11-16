@@ -9,6 +9,9 @@ const severityEnum = {
     high: SeverityLevel.HIGH
 }
 export class PostgresLogDataSouce implements LogDataSource {
+    getLogById(id: number): Promise<LogEntity[]> {
+        throw new Error("Method not implemented.");
+    }
     async saveLogs(log: LogEntity): Promise<void> {
         const level = severityEnum[log.level];
         const data = { ...log, level };

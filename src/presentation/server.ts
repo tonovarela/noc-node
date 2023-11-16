@@ -1,21 +1,16 @@
 
-import { envs } from "../config/plugins/envs.plugins";
-
-import { CheckService } from "../domain/use-cases/checks/check-service";
+//import { envs } from "../config/plugins/envs.plugins";
 import { CheckServiceMultiple } from "../domain/use-cases/checks/check-service-multiple";
-import { FileSystemDataSource } from "../infraestructure/datasources/file-system.datasource";
-import { MongoLogDataSource } from "../infraestructure/datasources/mongo-log-datasource";
-import { PostgresLogDataSouce } from "../infraestructure/datasources/postgres-log.datasouce";
+import { FileSystemDataSource,MongoLogDataSource,PostgresLogDataSouce } from "../infraestructure/datasources";
 import { LogRepositoryImpl } from "../infraestructure/repositories/log.repository.impl";
 import { CronService } from "./cron/cron-service";
-import { EmailService } from "./email/email.service";
-
+//import { EmailService } from "./email/email.service";
 const logRepositoryFileSystem = new LogRepositoryImpl(new FileSystemDataSource());
 const logRepositoryMongo = new LogRepositoryImpl(new MongoLogDataSource());
 const logRepositoryPostgres = new LogRepositoryImpl(new PostgresLogDataSouce());
 
-const { MAILER_SERVICE: service, MAILER_EMAIL: user, MAILER_SECRET_KEY: pass } = envs;
-const emailService = new EmailService({ service, user, pass });
+//const { MAILER_SERVICE: service, MAILER_EMAIL: user, MAILER_SECRET_KEY: pass } = envs;
+//const emailService = new EmailService({ service, user, pass });
 
 
 export class ServerApp {
